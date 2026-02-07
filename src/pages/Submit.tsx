@@ -119,8 +119,33 @@ export default function Submit() {
 
     setSubmitting(true);
 
-    // Update profile to mark as creator if not already
-    if (profile && !profile.is_creator) {
+    // Ensure profile exists (handles social login users)
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    if (!existingProfile) {
+      // Create profile for social login users
+      const username = user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`;
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: user.id,
+          username,
+          display_name: user.user_metadata?.full_name || username,
+          is_creator: true,
+        });
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+        toast.error(`Failed to create profile: ${profileError.message}`);
+        setSubmitting(false);
+        return;
+      }
+    } else if (profile && !profile.is_creator) {
+      // Update existing profile to mark as creator
       await supabase
         .from('profiles')
         .update({ is_creator: true })
@@ -141,7 +166,8 @@ export default function Submit() {
       .single();
 
     if (appError) {
-      toast.error('Failed to submit app. Please try again.');
+      console.error('App submission error:', appError);
+      toast.error(`Failed to submit app: ${appError.message}`);
       setSubmitting(false);
       return;
     }
