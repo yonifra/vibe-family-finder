@@ -7,9 +7,10 @@ import { AppCard } from '@/components/AppCard';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TierBadge } from '@/components/TierBadge';
+import { CreatorAnalytics } from '@/components/CreatorAnalytics';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
-import { UserPlus, UserMinus, Calendar, Sparkles, FlaskConical } from 'lucide-react';
+import { UserPlus, UserMinus, Calendar, Sparkles, FlaskConical, BarChart3 } from 'lucide-react';
 import type { App, Profile, Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -236,6 +237,13 @@ export default function CreatorProfile() {
             )}
           </div>
         </div>
+
+        {/* Analytics Section - Only visible to profile owner */}
+        {isOwnProfile && (
+          <div className="mb-8">
+            <CreatorAnalytics creatorId={creator.id} />
+          </div>
+        )}
 
         {/* Apps Section */}
         {appsLoading ? (
