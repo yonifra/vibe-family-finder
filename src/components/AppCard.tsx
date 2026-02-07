@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Share2 } from 'lucide-react';
 import { TierBadge } from './TierBadge';
 import { HeartButton } from './HeartButton';
 import { TagPill } from './TagPill';
 import type { App, Tag } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface AppCardProps {
   app: App;
@@ -75,15 +77,48 @@ export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
           initialHearted={hasUpvoted} 
         />
         
-        <a
-          href={app.app_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
-        >
-          Try It
-          <ExternalLink className="w-3.5 h-3.5" />
-        </a>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={async () => {
+              const shareUrl = app.creator 
+                ? `${window.location.origin}/creator/${app.creator.username}` 
+                : window.location.href;
+              const shareData = {
+                title: app.name,
+                text: `Check out ${app.name} on FamilyTech Sandbox!`,
+                url: shareUrl,
+              };
+              
+              if (navigator.share && navigator.canShare?.(shareData)) {
+                try {
+                  await navigator.share(shareData);
+                } catch (err) {
+                  if ((err as Error).name !== 'AbortError') {
+                    console.error('Share failed:', err);
+                  }
+                }
+              } else {
+                await navigator.clipboard.writeText(shareUrl);
+                toast.success('Link copied to clipboard!');
+              }
+            }}
+          >
+            <Share2 className="w-4 h-4" />
+          </Button>
+          
+          <a
+            href={app.app_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
+          >
+            Try It
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
       </div>
     </article>
   );
