@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Share2, Pencil } from 'lucide-react';
 import { TierBadge } from './TierBadge';
@@ -8,6 +8,7 @@ import { EditAppModal } from './EditAppModal';
 import type { App, Tag } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -20,7 +21,13 @@ interface AppCardProps {
 export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
   const { user } = useAuth();
   const [editModalOpen, setEditModalOpen] = useState(false);
-  
+  const [isTruncated, setIsTruncated] = useState(false);
+  const titleRef = useCallback((node: HTMLHeadingElement | null) => {
+    if (node) {
+      setIsTruncated(node.scrollWidth > node.clientWidth);
+    }
+  }, []);
+
   const isOwner = user?.id === app.creator_id;
 
   return (
@@ -38,7 +45,7 @@ export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
         )}
         
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-accent to-muted flex items-center justify-center overflow-hidden shrink-0">
               {app.icon_url ? (
                 <img src={app.icon_url} alt={app.name} className="w-full h-full object-cover" />
@@ -49,9 +56,16 @@ export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
               )}
             </div>
             <div className="min-w-0">
-              <h3 className="font-bold text-lg text-foreground leading-tight truncate">
-                {app.name}
-              </h3>
+              <Tooltip open={isTruncated ? undefined : false}>
+                <TooltipTrigger asChild>
+                  <h3 ref={titleRef} className="font-bold text-lg text-foreground leading-tight truncate">
+                    {app.name}
+                  </h3>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  {app.name}
+                </TooltipContent>
+              </Tooltip>
               {app.creator && (
                 <Link 
                   to={`/creator/${app.creator.username}`}

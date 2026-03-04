@@ -10,7 +10,7 @@ export function TierBadge({ tier, size = 'md' }: TierBadgeProps) {
   return (
     <span
       className={cn(
-        'tier-badge gap-1',
+        'tier-badge gap-1 shrink-0 whitespace-nowrap',
         tier === 'sandbox' ? 'tier-sandbox' : 'tier-main-stage',
         size === 'sm' && 'text-[10px] px-2 py-0.5'
       )}
