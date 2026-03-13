@@ -39,6 +39,29 @@ const MOCK_APPS: (App & { app_tags: { tag_id: string }[] })[] = [
     },
     app_tags: [],
   },
+  {
+    id: 'mock-superstar-trivia',
+    creator_id: 'b0cd17f7-aa55-4273-be5a-5aecd500bf9d',
+    name: 'SuperStar Trivia',
+    description: 'A fun trivia game for the whole family — test your knowledge and become the ultimate SuperStar!',
+    app_url: 'https://superstar-trivia.sticklight.app/',
+    icon_url: null,
+    screenshot_url: null,
+    upvotes_count: 0,
+    tier: 'sandbox',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    creator: {
+      id: 'b0cd17f7-aa55-4273-be5a-5aecd500bf9d',
+      username: 'maayan',
+      display_name: 'Maayan',
+      bio: null,
+      avatar_url: null,
+      is_creator: true,
+      created_at: new Date().toISOString(),
+    },
+    app_tags: [],
+  },
 ];
 
 export default function Index() {

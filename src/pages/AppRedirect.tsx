@@ -6,6 +6,7 @@ import { toAppSlug } from '@/lib/appRedirects';
 // TODO: REMOVE MOCK — temporary until RLS access is restored
 const MOCK_REDIRECTS: Record<string, string> = {
   'toddler-plate-builder': 'https://toddler-plate-builder-vjdjnh.sticklight.app/',
+  'superstar-trivia': 'https://superstar-trivia.sticklight.app/',
 };
 
 type Status = 'loading' | 'redirecting' | 'not-found';
@@ -36,7 +37,7 @@ export default function AppRedirect() {
           return;
         }
 
-        const match = data.find((app) => toAppSlug(app.name) === slug);
+        const match = data.find((app) => toAppSlug(app.name) === slug.toLowerCase());
 
         if (match) {
           setStatus('redirecting');

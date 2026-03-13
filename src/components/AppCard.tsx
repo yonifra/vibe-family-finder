@@ -21,7 +21,7 @@ interface AppCardProps {
 
 export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
   const { user } = useAuth();
-  const brandedUrl = `https://familyvibelabs.com/${toAppSlug(app.name)}`;
+  const slugPath = `/${toAppSlug(app.name)}`;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const titleRef = useCallback((node: HTMLHeadingElement | null) => {
@@ -145,15 +145,15 @@ export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
               <Share2 className="w-4 h-4" />
             </Button>
             
-            <a
-              href={brandedUrl}
+            <Link
+              to={slugPath}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
             >
               Try It
               <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            </Link>
           </div>
         </div>
       </article>
