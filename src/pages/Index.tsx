@@ -14,6 +14,33 @@ import { cn } from '@/lib/utils';
 
 type TierFilter = 'all' | 'sandbox' | 'main_stage';
 
+// TODO: REMOVE MOCK — temporary until RLS access is restored
+const MOCK_APPS: (App & { app_tags: { tag_id: string }[] })[] = [
+  {
+    id: 'mock-toddler-plate-builder',
+    creator_id: 'b0cd17f7-aa55-4273-be5a-5aecd500bf9d',
+    name: 'Toddler Plate Builder',
+    description: 'A fun, interactive tool that helps parents and toddlers build balanced, colorful plates together — turning mealtime into a playful learning experience.',
+    app_url: 'https://toddler-plate-builder-vjdjnh.sticklight.app/',
+    icon_url: null,
+    screenshot_url: null,
+    upvotes_count: 0,
+    tier: 'sandbox',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    creator: {
+      id: 'b0cd17f7-aa55-4273-be5a-5aecd500bf9d',
+      username: 'maayan',
+      display_name: 'Maayan',
+      bio: null,
+      avatar_url: null,
+      is_creator: true,
+      created_at: new Date().toISOString(),
+    },
+    app_tags: [],
+  },
+];
+
 export default function Index() {
   const { user } = useAuth();
   const [tierFilter, setTierFilter] = useState<TierFilter>('all');
@@ -67,7 +94,18 @@ export default function Index() {
         });
       }
 
-      return filteredApps as (App & { app_tags: { tag_id: string }[] })[];
+      // TODO: REMOVE MOCK — prepend mock apps (filtered to match active tier/search)
+      const visibleMocks = MOCK_APPS.filter((m) => {
+        if (tierFilter !== 'all' && m.tier !== tierFilter) return false;
+        if (searchQuery && !m.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        if (selectedTags.length > 0) {
+          const ids = m.app_tags.map((at) => at.tag_id);
+          if (!selectedTags.every((t) => ids.includes(t))) return false;
+        }
+        return true;
+      });
+
+      return [...visibleMocks, ...filteredApps] as (App & { app_tags: { tag_id: string }[] })[];
     },
   });
 

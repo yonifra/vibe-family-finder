@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Submit from "./pages/Submit";
 import CreatorProfile from "./pages/CreatorProfile";
+import AppRedirect from "./pages/AppRedirect";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,8 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/submit" element={<Submit />} />
             <Route path="/creator/:username" element={<CreatorProfile />} />
+            {/* Branded app redirect: familyvibelabs.com/<slug> */}
+            <Route path="/:slug" element={<AppRedirect />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

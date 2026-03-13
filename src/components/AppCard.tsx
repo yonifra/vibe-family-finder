@@ -6,6 +6,7 @@ import { HeartButton } from './HeartButton';
 import { TagPill } from './TagPill';
 import { EditAppModal } from './EditAppModal';
 import type { App, Tag } from '@/lib/types';
+import { toAppSlug } from '@/lib/appRedirects';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -20,6 +21,7 @@ interface AppCardProps {
 
 export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
   const { user } = useAuth();
+  const brandedUrl = `https://familyvibelabs.com/${toAppSlug(app.name)}`;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const titleRef = useCallback((node: HTMLHeadingElement | null) => {
@@ -144,7 +146,7 @@ export function AppCard({ app, tags = [], hasUpvoted = false }: AppCardProps) {
             </Button>
             
             <a
-              href={app.app_url}
+              href={brandedUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-sm font-medium text-secondary hover:underline"
